@@ -40,16 +40,16 @@
 
 > 添加主机资产信息，后续业务资产可管理主机资产
 
-![index](https://github.com/CTF-MissFeng/GoScan/blob/main/doc/3.png)
+![index](https://github.com/CTF-MissFeng/report/blob/main/doc/3.png)
 
 > 添加业务系统信息以及添加对应业务系统漏洞信息等
 
-![index](https://github.com/CTF-MissFeng/GoScan/blob/main/doc/4.png)
+![index](https://github.com/CTF-MissFeng/report/blob/main/doc/4.png)
 
-![index](https://github.com/CTF-MissFeng/GoScan/blob/main/doc/5.png)
+![index](https://github.com/CTF-MissFeng/report/blob/main/doc/5.png)
 
-![index](https://github.com/CTF-MissFeng/GoScan/blob/main/doc/7.png)
+![index](https://github.com/CTF-MissFeng/report/blob/main/doc/7.png)
 
 >漏洞管理
 
-![index](https://github.com/CTF-MissFeng/GoScan/blob/main/doc/6.png)
+![index](https://github.com/CTF-MissFeng/report/blob/main/doc/6.png)
