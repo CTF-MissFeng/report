@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加主机资产</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">厂商</label>
+                <div class="layui-input-block">
+                    <input type="text" name="TypeName" lay-verify="required" lay-reqtext="厂商不能为空" placeholder="请输入资产对应厂商"
+                           class="layui-input" id="TypeNameSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">应用系统</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AttriBution" placeholder="请输入资产对应的应用系统名" class="layui-input" id="AttriButionSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">资产部门</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Department" placeholder="请输入资产对应部门" class="layui-input" id="DepartmentSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">子域名</label>
+                <div class="layui-input-block">
+                    <textarea name="SubDomain" id="SubDomain" class="layui-textarea" placeholder="请输入资产对应子域名,多个以换行符分割"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">内网IP</label>
+                <div class="layui-input-block">
+                    <textarea name="IntranetIp" id="IntranetIp" class="layui-textarea" placeholder="请输入资产对应内网IP,多个以换行符分割"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">公网IP</label>
+                <div class="layui-input-block">
+                    <textarea name="PublicIp" id="PublicIp" class="layui-textarea" placeholder="请输入资产对应公网IP,多个以换行符分割"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">资产对应管理员名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AssetsUserName" placeholder="请输入资产对应管理员" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="assets_type_add">确认添加</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'tableSelect'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            tableSelect = layui.tableSelect;
+
+        //监听提交
+        form.on('submit(assets_type_add)', function(data) {
+            $.ajax({
+                url: "/api/assets/type",
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                type: 'put',
+                success: function(result) {
+                    if (result.code == 200) {
+                        var index = layer.alert("添加资产信息成功", {
+                            title: '提示',
+                            icon: 1
+                        }, function() {
+                            parent.layui.table.reload("currentTable_AssetsType");
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        })
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                },
+                error: function (e) {
+                    layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                }
+            })
+            return false;
+        });
+
+        tableSelect.render({
+            elem: '#TypeNameSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '厂商搜索',
+            searchKey: 'TypeName',
+            table: {
+                url: '/api/assets/group/type',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'type_name', title: '厂商'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.type_name)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#AttriButionSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '应用系统搜索',
+            searchKey: 'TypeName',
+            table: {
+                url: '/api/assets/group/attribution',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'attribution', title: '应用系统'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.attribution)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#DepartmentSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '资产部门搜索',
+            searchKey: 'Department',
+            table: {
+                url: '/api/assets/group/department',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'department', title: '资产部门'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.department)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+    });
+</script>
+
+</body>
+</html>

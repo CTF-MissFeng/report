@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加安全管理员</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">安全管理员</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ManagerName" lay-verify="required" lay-reqtext="安全管理员不能为空" placeholder="请输入安全管理员"
+                           class="layui-input">
+                    <tip>添加重复安全管理员会失败</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="manager_add">确认添加</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var $ = layui.jquery,
+            form = layui.form;
+
+        //监听提交
+        form.on('submit(manager_add)', function(data) {
+            $.ajax({
+                url: "/api/assets/manager",
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                type: 'put',
+                success: function(result) {
+                    if (result.code == 200) {
+                        var index = layer.alert("添加安全管理员成功", {
+                            title: '提示',
+                            icon: 1
+                        }, function() {
+                            parent.layui.table.reload("currentTable_manager");
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        })
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                },
+                error: function (e) {
+                    layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                }
+            })
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

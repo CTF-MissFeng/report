@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>业务系统详情</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>应用系统</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AttriBution" Readonly=“true” class="layui-input" id="AttriButionSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>安全管理员</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ManagerName" Readonly=“true” class="layui-input" id="ManagerNameSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>业务系统名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AssetsName" id="AssetsName" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>Url</label>
+                <div class="layui-input-block">
+                    <textarea name="Urls" id="Urls" class="layui-textarea" Readonly=“true”></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">业务系统指纹</label>
+                <div class="layui-input-block">
+                    <textarea name="FingerPrint" id="FingerPrint" Readonly=“true” class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">WebServer类型</label>
+                <div class="layui-input-block">
+                    <input type="text" name="WebServer" id="WebServer" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>备注</label>
+                <div class="layui-input-block">
+                    <textarea name="Remarks" id="Remarks" class="layui-textarea" Readonly=“true”></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>资产附件</label>
+                <div class="layui-input-block">
+                    <a href="" id="file_name" target="_blank">点击下载</a>
+                </div>
+            </div>
+
+        </div>
+
+        <table class="layui-hide" id="currentTable_show_report" lay-filter="WebReportTableFilter"></table>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        var AssetsWebId = localStorage.getItem("assetsWebId");
+        if (AssetsWebId === ""){
+            var iframeIndex = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(iframeIndex);
+        }
+
+        function GetWebInfo() {
+            $.ajax({
+                url: "/api/assets/webinfo",
+                dataType: 'json',
+                type: 'post',
+                data: JSON.stringify({"ID":AssetsWebId}),
+                success: function (result) {
+                    if (result.code == 200) {
+                        $("#AttriButionSelect").attr("value", result.data.attribution);
+                        $("#ManagerNameSelect").attr("value", result.data.manager_name);
+                        $("#AssetsName").attr("value", result.data.assets_name);
+                        $("#Urls").text(result.data.urls);
+                        $("#FingerPrint").text(result.data.fingerprint);
+                        $("#WebServer").attr("value", result.data.webserver);
+                        $("#Remarks").text(result.data.remarks);
+                        $("#file_name").attr("href", result.data.file_name);
+                        form.render();
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                }
+            });
+        }
+        GetWebInfo();
+
+        table.render({
+            elem: '#currentTable_show_report',
+            url: "/api/assets/web/exports",
+            where: {"assetsWebId": AssetsWebId},
+            cols: [
+                [
+                    {
+                        field: 'level_name',
+                        width: 250,
+                        title: '漏洞名'
+                    },
+                    {
+                        field: 'level',
+                        width: 100,
+                        title: '漏洞等级',
+                        templet: function(d){
+                            if (d.level===1){
+                                return '<span style="color: #c00;">高危</span>'
+                            }else if(d.level===2){
+                                return '<span style="color: #ffd700;">中危</span>'
+                            }else{
+                                return '<span style="color: #00a15c;">低危</span>'
+                            }
+                        }
+                    },
+                    {
+                        field: 'level_status',
+                        width: 100,
+                        title: '整改情况',
+                        templet: function(d){
+                            if (d.level_status===1){
+                                return '<span style="color: #00a15c;">已整改</span>'
+                            }else if(d.level_status===2){
+                                return '<span style="color: #c00;">未整改</span>'
+                            }else{
+                                return '<span style="color: #ffd700;">已关闭</span>'
+                            }
+                        }
+                    },
+                    {
+                        field: 'file_path',
+                        width: 130,
+                        title: '报告下载',
+                        templet: '<div><a href="{{d.file_path}}" target="_blank">点击下载</a></div>'
+                    },
+                    {
+                        field: 'file_date',
+                        minWidth: 200,
+                        title: '发现时间'
+                    },
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 20,
+            page: true,
+            skin: 'line'
+        });
+
+    });
+</script>
+
+</body>
+</html>

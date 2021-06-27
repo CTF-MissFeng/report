@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>添加渗透测试报告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            下面是该业务系统已有漏洞，不要添加重复了哦！
+        </blockquote>
+        <table class="layui-hide" id="currentTable_report" lay-filter="WebReportTableFilter"></table>
+
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            <button class="layui-btn layui-btn-normal" id="AddLevel"><i class="layui-icon">&#xe624;</i></button>
+        </blockquote>
+
+        <div class="layui-form layuimini-form" lay-filter="assets_web_report_add">
+
+            <div id="from_report_add">
+                <div class="layui-row">
+                    <div class="layui-col-md2">
+                        <label class="layui-form-label required">漏洞等级</label>
+                        <div class="layui-input-block">
+                            <select name="level1" lay-verify="">
+                                <option value="1" selected>高危</option>
+                                <option value="2">中危</option>
+                                <option value="3">低危</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-md4">
+                        <label class="layui-form-label required">漏洞名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="level_name1" lay-verify="required" lay-reqtext="漏洞名称不能为空" placeholder="请输入漏洞名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md2">
+                        <label class="layui-form-label required">整改情况</label>
+                        <div class="layui-input-block">
+                            <select name="level_status1" lay-verify="">
+                                <option value="2" selected>未整改</option>
+                                <option value="1">已整改</option>
+                                <option value="3">已关闭</option>
+                            </select>
+                        </div>
+                    </div>
+                </div><br/>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">渗透测试报告上传</label>
+                <div class="layui-input-block">
+                    <input type="text" name="report_file_name" id="report_file_name" class="layui-input layui-hide">
+                    <button type="button" class="layui-btn" id="UploadAssetsReportFile"><i class="layui-icon"></i>上传报告</button>
+                    <div class="layui-upload-list">
+                        <tip id="UploadAssetsReportFileTip"></tip>
+                        <p id="UploadAssetsReportFileText"></p>
+                    </div>
+                    <div style="width: 150px;">
+                        <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="UploadAssetsReportFileFilter">
+                            <div class="layui-progress-bar" lay-percent=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>报告编写时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ReportId" id="ReportId" class="layui-input layui-hide">
+                    <input type="text" name="ReportDataTime" id="ReportDataTime" lay-verify="required" placeholder="请选择报告编写时间" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="assets_report_add">提交报告</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script>
+    layui.use(['form','laydate', 'upload', 'element', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            upload = layui.upload,
+            element = layui.element,
+            table = layui.table,
+            laydate = layui.laydate;
+
+        var AssetsWebId = localStorage.getItem("assetsWebId");
+        if (AssetsWebId === ""){
+            var iframeIndex = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(iframeIndex);
+        }
+        $("#ReportId").attr("value", AssetsWebId);
+
+        laydate.render({
+            elem: '#ReportDataTime'
+        });
+
+        var selectNum=1
+        $('#AddLevel').click(function() {
+            selectNum++
+            var str =`
+            <div class="layui-row">
+                <div class="layui-col-md2">
+                <label class="layui-form-label required">漏洞等级</label>
+                    <div class="layui-input-block">
+                        <select name="level`+selectNum+`" lay-verify="">
+                            <option value="1" selected>高危</option>
+                            <option value="2">中危</option>
+                            <option value="3">低危</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-md4">
+                    <label class="layui-form-label required">漏洞名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="level_name`+selectNum+`" lay-verify="required" lay-reqtext="漏洞名称不能为空" placeholder="请输入漏洞名称" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <label class="layui-form-label required">整改情况</label>
+                    <div class="layui-input-block">
+                        <select name="level_status`+selectNum+`" lay-verify="">
+                            <option value="2" selected>未整改</option>
+                            <option value="1">已整改</option>
+                            <option value="3">已关闭</option>
+                        </select>
+                    </div>
+                </div>
+            </div><br/>
+            `
+            $('#from_report_add').append($(str));
+            form.render();
+        });
+
+        //监听提交
+        form.on('submit(assets_report_add)', function(data) {
+            // layer.alert(JSON.stringify(data.field));
+            $.ajax({
+                url: "/api/assets/web/export",
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                type: 'put',
+                success: function(result) {
+                    if (result.code == 200) {
+                        var index = layer.alert("添加漏洞成功", {
+                            title: '提示',
+                            icon: 1
+                        }, function() {
+                            parent.layui.table.reload("currentTable_AssetsWeb");
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        })
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                },
+                error: function (e) {
+                    layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                }
+            })
+            return false;
+        });
+
+        //业务系统渗透测试报告附件上传
+        var uploadReport = upload.render({
+            elem: '#UploadAssetsReportFile'
+            ,url: '/api/assets/web/reportupload'
+            ,field: "file"
+            ,accept: "file"
+            ,method: "post"
+            ,before: function(obj){
+                element.progress('UploadAssetsReportFileFilter', '0%');
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+            ,done: function(res){
+                if(res.code !== 200){
+                    return layer.msg(res.msg);
+                }
+                $('#UploadAssetsReportFileText').html('');
+                $('#UploadAssetsReportFileTip').text("上传成功,附件名："+ res.msg);
+                $("#report_file_name").attr("value", res.msg);
+            }
+            ,error: function(){
+                var demoText = $('#UploadAssetsReportFileText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+            }
+            //进度条
+            ,progress: function(n, elem, e){
+                element.progress('UploadAssetsReportFileFilter', n + '%');
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+
+        table.render({
+            elem: '#currentTable_report',
+            url: "/api/assets/web/exports",
+            where: {"assetsWebId": AssetsWebId},
+            cols: [
+                [
+                    {
+                        field: 'level_name',
+                        width: 250,
+                        title: '漏洞名'
+                    },
+                    {
+                        field: 'level',
+                        width: 100,
+                        title: '漏洞等级',
+                        templet: function(d){
+                            if (d.level===1){
+                                return '<span style="color: #c00;">高危</span>'
+                            }else if(d.level===2){
+                                return '<span style="color: #ffd700;">中危</span>'
+                            }else{
+                                return '<span style="color: #00a15c;">低危</span>'
+                            }
+                        }
+                    },
+                    {
+                        field: 'level_status',
+                        width: 100,
+                        title: '整改情况',
+                        templet: function(d){
+                            if (d.level_status===1){
+                                return '<span style="color: #00a15c;">已整改</span>'
+                            }else if(d.level_status===2){
+                                return '<span style="color: #c00;">未整改</span>'
+                            }else{
+                                return '<span style="color: #ffd700;">已关闭</span>'
+                            }
+                        }
+                    },
+                    {
+                        field: 'file_path',
+                        width: 130,
+                        title: '报告下载',
+                        templet: '<div><a href="{{d.file_path}}" target="_blank">点击下载</a></div>'
+                    },
+                    {
+                        field: 'file_date',
+                        width: 300,
+                        title: '发现时间'
+                    },
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 20,
+            page: true,
+            skin: 'line'
+        });
+    });
+</script>
+
+</body>
+</html>

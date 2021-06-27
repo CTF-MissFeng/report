@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Web应用</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        .layui-table-cell {
+            font-size:14px;
+            padding:0 5px;
+            height:auto;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>Web应用搜索</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">应用系统</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="AttriBution" placeholder="请选择应用系统" autocomplete="off" class="layui-input" id="AttriButionSelect">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">安全管理员</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="ManagerName" placeholder="请选择安全管理员" autocomplete="off" class="layui-input" id="ManagerNameSelect">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">业务系统</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="AssetsName" placeholder="请选择业务系统"  autocomplete="off" class="layui-input" id="AssetsNameSelect">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">Url</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="Urls" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">Web指纹</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="FingerPrint" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i>
+                                搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarWeb">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon">&#xe624;</i>添加资产</button>
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="export"><i class="layui-icon">&#xe67d;</i>导出资产</button>
+            </div>
+        </script>
+        <blockquote class="layui-elem-quote layui-text">
+           提示：双击某一行或单击业务截图列，即可查看对应的业务系统放大截图；删除业务系统不影响已有的渗透测试报告； 修改业务系统名将自动更改渗透测试报告关联的业务系统名
+        </blockquote>
+        <table class="layui-hide" id="currentTable_AssetsWeb" lay-filter="AssetsWebTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs" lay-event="show"><i class="layui-icon">&#xe60a;</i>详情</a>
+            <a class="layui-btn layui-btn-xs" lay-event="report"><i class="layui-icon">&#xe857;</i>添加漏洞</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+        </script>
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table', 'tableSelect', 'upload'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            tableSelect = layui.tableSelect,
+            upload = layui.upload;
+
+        table.render({
+            elem: '#currentTable_AssetsWeb',
+            url: "/api/assets/web",
+            toolbar: '#toolbarWeb',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '刷新',
+                layEvent: 'Refresh',
+                icon: 'layui-icon-refresh-3'
+            }],
+            cols: [
+                [{
+                    field: 'id',
+                    width: 70,
+                    title: 'ID',
+                    sort: true
+                },
+                    {
+                        field: 'id1',
+                        width: 1,
+                        title: '',
+                        hide: true
+                    },
+                    {
+                        field: 'attribution',
+                        width: 200,
+                        title: '应用系统'
+                    },
+                    {
+                        field: 'manager_name',
+                        width: 100,
+                        title: '安全管理员'
+                    },
+                    {
+                        field: 'assets_name',
+                        width: 200,
+                        title: '业务系统'
+                    },
+                    {
+                        field: 'level_count',
+                        width: 100,
+                        title: '漏洞数'
+                    },
+                    {
+                        field: 'level_no_count',
+                        width: 100,
+                        title: '未整改'
+                    },
+                    {
+                        field: 'urls',
+                        width: 300,
+                        title: 'Url',
+                    },
+                    {
+                        field: 'fingerprint',
+                        width: 150,
+                        title: 'web指纹'
+                    },
+                    {
+                        field: 'screenshots_path',
+                        width: 100,
+                        title: '业务截图',
+                        event: 'eventScreenshots',
+                        // hide: true,
+                        templet: '<div><img src="{{d.screenshots_path}}" width="50" height="50"></div>'
+                    },
+                    {
+                        title: '操作',
+                        minWidth: 150,
+                        toolbar: '#currentTableBar',
+                        align: "center"
+                    }
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 20,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            //执行搜索重载
+            table.reload('currentTable_AssetsWeb', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        //触发行双击事件
+        table.on('rowDouble(AssetsWebTableFilter)', function(obj){
+            var data = obj.data;
+            if (data.data){
+                layer.photos({
+                    photos: data
+                });
+            }
+        });
+
+        table.on('tool(AssetsWebTableFilter)', function (obj) {
+            // var data = obj.data.id1;
+            if (obj.event === 'delete') {
+                layer.confirm('确定删除该资产吗?', function (index) {
+                    $.ajax({
+                        url: "/api/assets/web",
+                        data: JSON.stringify({"ID":obj.data.id1}),
+                        contentType: 'application/json;charset=UTF-8',
+                        dataType: 'json',
+                        type: 'delete',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                layer.alert('删除该业务系统成功!', {
+                                    title: '提示',
+                                    icon: 1
+                                })
+                                obj.del();
+                                layer.close(index);
+                                table.reload('currentTable_AssetsWeb', {
+                                    page: {
+                                        curr: 1
+                                    }
+                                    ,
+                                }, 'data');
+                            } else {
+                                layer.alert(result.msg, {
+                                    title: '提示',
+                                    icon: 2
+                                })
+                                layer.close(index);
+                            }
+                        },
+                        error: function (e) {
+                            layer.alert(JSON.stringify(e), {
+                                title: '提示',
+                                icon: 2
+                            })
+                        }
+                    })
+                    layer.close(index);
+                });
+            }else if(obj.event === 'report'){
+                var AssetsWebId = obj.data.id1;
+                localStorage.setItem("assetsWebId", AssetsWebId);
+                var index = layer.open({
+                    title: obj.data.assets_name+" 添加渗透测试报告",
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/web/report/add",
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }else if(obj.event === 'show'){
+                var AssetsWebId = obj.data.id1;
+                localStorage.setItem("assetsWebId", AssetsWebId);
+                var index = layer.open({
+                    title: obj.data.assets_name+" 资产详情",
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/web/show",
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }else if(obj.event === 'eventScreenshots'){
+                var data = obj.data;
+                if (data.data){
+                    layer.photos({
+                        photos: data
+                    });
+                }
+            }else if(obj.event === 'edit'){
+                var AssetsWebId = obj.data.id1;
+                localStorage.setItem("assetsWebId", AssetsWebId);
+                var index = layer.open({
+                    title: obj.data.assets_name+" 资产修改",
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/web/edit",
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }
+        });
+
+        table.on('toolbar(AssetsWebTableFilter)', function (obj) {
+            if(obj.event === 'Refresh'){
+                table.reload('currentTable_AssetsWeb', {
+                    page: {
+                        curr: 1
+                    }
+                    ,
+                }, 'data');
+            }else if(obj.event === 'add'){
+                var typeindex = layer.open({
+                    title: '添加应用系统资产',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/web/add",
+                });
+                $(window).on("resize", function () {
+                    layer.full(typeindex);
+                });
+            }else if(obj.event === 'export'){
+                layer.confirm('确定导出所有业务系统资产吗?', function (index) {
+                    window.location.href='/api/assets/web/export';
+                    layer.close(index);
+                });
+            }
+        });
+
+        tableSelect.render({
+            elem: '#AttriButionSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '应用系统搜索',
+            searchKey: 'Attribution',
+            table: {
+                url: '/api/assets/group/web/attribution',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'attribution', title: '应用系统'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.attribution)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#ManagerNameSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '安全管理员搜索',
+            searchKey: 'ManagerName',
+            table: {
+                url: '/api/assets/group/web/managernames',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'manager_name', title: '安全管理员'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.manager_name)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#AssetsNameSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '业务系统搜索',
+            searchKey: 'AssetsName',
+            table: {
+                url: '/api/assets/group/web/assetsname',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'assets_name', title: '业务系统'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.assets_name)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+    });
+</script>
+
+</body>
+</html>

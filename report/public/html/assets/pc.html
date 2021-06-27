@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>终端资产</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+    <style>
+        .layui-table-cell {
+            font-size:14px;
+            padding:0 5px;
+            height:auto;
+            overflow:visible;
+            text-overflow:inherit;
+            white-space:normal;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>终端资产搜索</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">部门</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="Department" placeholder="请选择部门" autocomplete="off" class="layui-input" id="PcDepartmentSelect">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">二级部门</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="DepartmentSub" placeholder="请选择二级部门" autocomplete="off" class="layui-input" id="PcDepartmentSubSelect">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">姓名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="PersonName" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">工号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="WorkNumber" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">IP/Mac地址</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="Address" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">上网权限</label>
+                            <div class="layui-input-block">
+                                <select name="InternetFlag" id="InternetFlag">
+                                    <option value="" selected>否</option>
+                                    <option value="是">是</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">VPN权限</label>
+                            <div class="layui-input-block">
+                                <select name="VpnFlag" id="VpnFlag">
+                                    <option value="" selected>否</option>
+                                    <option value="是">是</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i>
+                                搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarPc">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon">&#xe624;</i>添加资产</button>
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="download"><i class="layui-icon">&#xe601;</i>下载资产模板</button>
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="import" id="PcImport"><i class="layui-icon">&#xe681;</i>导入资产</button>
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="export"><i class="layui-icon">&#xe67d;</i>导出资产</button>
+                <button class="layui-btn layui-btn layui-btn-sm data-add-btn" lay-event="ichangan"><i class="layui-icon">&#xe612;</i>加载用户</button>
+                <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="empty"><i class="layui-icon">&#xe640;</i>清空数据</button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTable_AssetsPc" lay-filter="AssetsPcTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-xs" lay-event="show"><i class="layui-icon">&#xe60a;</i>详情</a>
+            <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+        </script>
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table', 'tableSelect', 'upload'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            tableSelect = layui.tableSelect,
+            upload = layui.upload;
+
+        table.render({
+            elem: '#currentTable_AssetsPc',
+            url: "/api/assets/pc",
+            toolbar: '#toolbarPc',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '刷新',
+                layEvent: 'Refresh',
+                icon: 'layui-icon-refresh-3'
+            }],
+            cols: [
+                [{
+                    field: 'id',
+                    width: 70,
+                    title: 'ID',
+                    sort: true
+                },
+                    {
+                        field: 'id1',
+                        width: 1,
+                        title: '',
+                        hide: true
+                    },
+                    {
+                        field: 'department',
+                        width: 160,
+                        title: '部门'
+                    },
+                    {
+                        field: 'department_sub',
+                        width: 150,
+                        title: '二级部门'
+                    },
+                    {
+                        field: 'work_number',
+                        width: 100,
+                        title: '工号'
+                    },
+                    {
+                        field: 'person_name',
+                        width: 100,
+                        title: '姓名'
+                    },
+                    {
+                        field: 'computer_type',
+                        width: 100,
+                        title: '类型'
+                    },
+                    {
+                        field: 'address',
+                        width: 170,
+                        title: 'IP/MAC地址'
+                    },
+                    {
+                        field: 'computer_name',
+                        width: 150,
+                        title: '主机名'
+                    },
+                    {
+                        field: 'secret_level',
+                        width: 150,
+                        title: '涉密等级'
+                    },
+                    {
+                        field: 'internet_flag',
+                        width: 100,
+                        title: '外网权限'
+                    },
+                    {
+                        field: 'vpn_flag',
+                        width: 100,
+                        title: 'VPN权限'
+                    },
+                    {
+                        field: 'email_flag',
+                        width: 100,
+                        title: '邮件权限'
+                    },
+                    {
+                        title: '操作',
+                        minWidth: 150,
+                        toolbar: '#currentTableBar',
+                        align: "center"
+                    }
+                ]
+            ],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 20,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            //执行搜索重载
+            table.reload('currentTable_AssetsPc', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        table.on('tool(AssetsPcTableFilter)', function (obj) {
+            // var data = obj.data.id1;
+            if (obj.event === 'delete') {
+                layer.confirm('确定删除该资产吗?', function (index) {
+                    $.ajax({
+                        url: "/api/assets/pc",
+                        data: JSON.stringify({"ID":obj.data.id1}),
+                        contentType: 'application/json;charset=UTF-8',
+                        dataType: 'json',
+                        type: 'delete',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                layer.alert('删除该终端资产所属成功!', {
+                                    title: '提示',
+                                    icon: 1
+                                })
+                                obj.del();
+                                layer.close(index);
+                                table.reload('currentTable_AssetsPc', {
+                                    page: {
+                                        curr: 1
+                                    }
+                                    ,
+                                }, 'data');
+                            } else {
+                                layer.alert(result.msg, {
+                                    title: '提示',
+                                    icon: 2
+                                })
+                                layer.close(index);
+                            }
+                        },
+                        error: function (e) {
+                            layer.alert(JSON.stringify(e), {
+                                title: '提示',
+                                icon: 2
+                            })
+                        }
+                    })
+                    layer.close(index);
+                });
+            }else if(obj.event === 'edit'){
+                var AssetsPcId = obj.data.id1;
+                localStorage.setItem("assetsPcId", AssetsPcId);
+                var index = layer.open({
+                    title: obj.data.person_name+" 终端资产编辑",
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/pc/edit",
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }else if(obj.event === 'show'){
+                var AssetsPcId = obj.data.id1;
+                localStorage.setItem("assetsPcId", AssetsPcId);
+                var index = layer.open({
+                    title: obj.data.person_name+" 终端资产详情",
+                    type: 2,
+                    shade: 0.2,
+                    maxmin:true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/pc/show",
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            }
+        });
+
+        tableSelect.render({
+            elem: '#PcDepartmentSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '部门搜索',
+            searchKey: 'Department',
+            table: {
+                url: '/api/assets/group/pc/department',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'department', title: '部门'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.department)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#PcDepartmentSubSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '二级部门搜索',
+            searchKey: 'DepartmentSub',
+            table: {
+                url: '/api/assets/group/pc/departmentsub',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'department_sub', title: '二级部门'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.department_sub)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        table.on('toolbar(AssetsPcTableFilter)', function (obj) {
+            if(obj.event === 'Refresh'){
+                table.reload('currentTable_AssetsPc', {
+                    page: {
+                        curr: 1
+                    }
+                    ,
+                }, 'data');
+            }else if(obj.event === 'add'){
+                var typeindex = layer.open({
+                    title: '添加终端资产',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: "/assets/pc/add",
+                });
+                $(window).on("resize", function () {
+                    layer.full(typeindex);
+                });
+            }else if(obj.event === 'export'){
+                layer.confirm('确定导出所有终端资产吗?', function (index) {
+                    window.location.href='/api/assets/pc/export';
+                    layer.close(index);
+                });
+            }else if(obj.event === 'ichangan'){
+                var loading = layer.load();
+                $.ajax({
+                    url: "/api/assets/pc/users",
+                    type: 'get',
+                    success: function (result) {
+                        layer.close(loading)
+                        if (result.code == 200) {
+                            layer.alert('加载用户数据成功!', {title: '提示', icon: 1})
+                        } else {
+                            layer.alert(result.msg, {title: '提示', icon: 2})
+                        }
+                    },
+                    error: function (e) {
+                        layer.close(loading)
+                        layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                    }
+                })
+            }else if(obj.event === 'download'){
+                window.location.href='/api/assets/pc/download';
+            }else if(obj.event === 'empty'){
+                layer.confirm('确定清空所有终端资产数据吗？该操作不可还原', function (index) {
+                    $.ajax({
+                        url: "/api/assets/pc",
+                        data: "",
+                        contentType: 'application/json;charset=UTF-8',
+                        dataType: 'json',
+                        type: 'post',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                layer.alert('清空终端资产成功!', {title: '提示', icon: 1})
+                                layer.close(index);
+                                table.reload('currentTable_AssetsPc', {
+                                    page: {
+                                        curr: 1
+                                    }
+                                    ,
+                                }, 'data');
+                            } else {
+                                layer.alert(result.msg, {title: '提示', icon: 2})
+                            }
+                        },
+                        error: function (e) {
+                            layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                        }
+                    })
+                });
+            }
+        });
+
+        var uploadPc = upload.render({
+            elem: '#PcImport'
+            ,url: '/api/assets/pc/upload'
+            ,acceptMime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ,field: "file"
+            ,method: "post"
+            ,exts: "xlsx"
+            ,before: function(obj){
+                layer.load();
+            }
+            ,choose:function(obj){
+                uploadPc.config.elem.next()[0].value = '';
+            }
+            ,done: function(res, index, upload){
+                layer.closeAll('loading');
+                layer.alert(res.msg, {
+                    title: '提示',
+                    icon: 2
+                });
+                table.reload('currentTable_AssetsPc', {
+                    page: {
+                        curr: 1
+                    },
+                }, 'data');
+            }
+            ,error: function(index, upload){
+                uploadPc.reload();
+                layer.closeAll('loading');
+                layer.alert("终端资产导入失败,可能是由于网络原因导致!", {
+                    title: '提示',
+                    icon: 2
+                })
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

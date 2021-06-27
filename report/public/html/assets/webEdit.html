@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>修改业务系统资产</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>应用系统</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Fid" id="Fid" class="layui-input layui-hide">
+                    <input type="text" name="AttriBution" lay-verify="required" Readonly=“true” lay-reqtext="应用系统不能为空" placeholder="请选择资产对应的应用系统名" class="layui-input" id="AttriButionSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>安全管理员</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ManagerName" lay-verify="required" Readonly=“true” lay-reqtext="安全管理员不能为空" placeholder="请选择资产对应的安全管理员" class="layui-input" id="ManagerNameSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>业务系统名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="AssetsName" id="AssetsName" lay-verify="required" lay-reqtext="业务系统名不能为空" placeholder="请输入业务系统名" class="layui-input">
+                    <tip>业务系统名不可重复,否则添加失败</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>Url</label>
+                <div class="layui-input-block">
+                    <textarea name="Urls" id="Urls" class="layui-textarea" lay-verify="required" placeholder="请输入业务系统Url地址,多个以换行分割"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">业务系统指纹</label>
+                <div class="layui-input-block">
+                    <textarea name="FingerPrint" id="FingerPrint" class="layui-textarea" placeholder="请输入业务系统指纹,多个以换行分割"></textarea>
+                    <tip>开发框架：springboot、thinkphp、shiro等<br/><br/>开发语言:php、java<br/><br/>通用系统：xxxOA系统、开源项目等</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">WebServer类型</label>
+                <div class="layui-input-block">
+                    <input type="text" name="WebServer" id="WebServer" placeholder="请输入业务系统web服务器类型" class="layui-input">
+                    <tip>例：IIS6.0、Apache-xxx版本、Tomcat等</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" required>备注</label>
+                <div class="layui-input-block">
+                    <textarea name="Remarks" id="Remarks" class="layui-textarea" placeholder="请输入业务系统相关备注"></textarea>
+                    <tip>例：业务管理员/联系方式/测试账号等等</tip>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">业务系统截图上传(不上传表示不更新)</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="UploadScreenshots"><i class="layui-icon"></i>上传业务系统图片</button>
+                    <input type="text" name="ScreenshotsPath" id="ScreenshotsPath" class="layui-input layui-hide">
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="UploadScreenshotsImgsrc" width="150" height="150">
+                        <p id="UploadScreenshotsText"></p>
+                    </div>
+                    <div style="width: 150px;">
+                        <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="UploadScreenshotsFilter">
+                            <div class="layui-progress-bar" lay-percent=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">资产附件(不上传表示不更新)</label>
+                <div class="layui-input-block">
+                    <input type="text" name="file_name" id="file_name" class="layui-input layui-hide">
+                    <button type="button" class="layui-btn" id="UploadAssetsFile"><i class="layui-icon"></i>上传资产附件</button>
+                    <div class="layui-upload-list">
+                        <tip id="UploadAssetsFileTip"></tip>
+                        <p id="UploadAssetsFileText"></p>
+                    </div>
+                    <div style="width: 150px;">
+                        <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="UploadAssetsFileFilter">
+                            <div class="layui-progress-bar" lay-percent=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="layui-border-blue">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" lay-submit lay-filter="assets_web_edit">确认修改</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'tableSelect', 'upload', 'element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            upload = layui.upload,
+            element = layui.element,
+            tableSelect = layui.tableSelect;
+
+        var AssetsWebId = localStorage.getItem("assetsWebId");
+        if (AssetsWebId === ""){
+            var iframeIndex = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(iframeIndex);
+        }
+
+        function GetWebInfo() {
+            $.ajax({
+                url: "/api/assets/webinfo",
+                dataType: 'json',
+                type: 'post',
+                data: JSON.stringify({"ID":AssetsWebId}),
+                success: function (result) {
+                    if (result.code == 200) {
+                        $("#AttriButionSelect").attr("value", result.data.attribution);
+                        $("#ManagerNameSelect").attr("value", result.data.manager_name);
+                        $("#AssetsName").attr("value", result.data.assets_name);
+                        $("#Urls").text(result.data.urls);
+                        $("#FingerPrint").text(result.data.fingerprint);
+                        $("#WebServer").attr("value", result.data.webserver);
+                        $("#Remarks").text(result.data.remarks);
+                        $("#ScreenshotsPath").attr("value", result.data.screenshots_path);
+                        $("#file_name").attr("value", result.data.file_name);
+                        $("#Fid").attr("value", AssetsWebId);
+                        form.render();
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                }
+            });
+        }
+        GetWebInfo();
+
+        //业务系统截图上传
+        var uploadInst = upload.render({
+            elem: '#UploadScreenshots'
+            ,url: '/api/assets/web/imgupload'
+            ,field: "file"
+            ,method: "post"
+            ,acceptMime: "image/jpg, image/png"
+            ,exts: "jpg|png|jpeg"
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#UploadScreenshotsImgsrc').attr('src', result);
+                });
+                element.progress('UploadScreenshotsFilter', '0%');
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+            ,done: function(res){
+                if(res.code !== 200){
+                    return layer.msg(res.msg);
+                }
+                $('#UploadScreenshotsText').html(''); //置空上传失败的状态
+                $("#ScreenshotsPath").attr("value", res.msg);
+            }
+            ,error: function(){
+                var demoText = $('#UploadScreenshotsText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+            //进度条
+            ,progress: function(n, elem, e){
+                element.progress('UploadScreenshotsFilter', n + '%');
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+
+        //业务系统资产附件上传
+        var uploadInst1 = upload.render({
+            elem: '#UploadAssetsFile'
+            ,url: '/api/assets/web/fileupload'
+            ,field: "file"
+            ,accept: "file"
+            ,method: "post"
+            ,before: function(obj){
+                element.progress('UploadAssetsFileFilter', '0%');
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+            ,done: function(res){
+                if(res.code !== 200){
+                    return layer.msg(res.msg);
+                }
+                $('#UploadAssetsFileText').html('');
+                $('#UploadAssetsFileTip').text("上传成功,附件名："+ res.msg);
+                $("#file_name").attr("value", res.msg);
+            }
+            ,error: function(){
+                var demoText = $('#UploadAssetsFileText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+            }
+            //进度条
+            ,progress: function(n, elem, e){
+                element.progress('UploadAssetsFileFilter', n + '%');
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(assets_web_edit)', function(data) {
+            $.ajax({
+                url: "/api/assets/web",
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: 'json',
+                type: 'put',
+                success: function(result) {
+                    if (result.code == 200) {
+                        var index = layer.alert("修改业务系统成功", {
+                            title: '提示',
+                            icon: 1
+                        }, function() {
+                            parent.layui.table.reload("currentTable_AssetsWeb");
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        })
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                },
+                error: function (e) {
+                    layer.alert(JSON.stringify(e), {title: '提示', icon: 2})
+                }
+            })
+            return false;
+        });
+
+        tableSelect.render({
+            elem: '#AttriButionSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '应用系统搜索',
+            searchKey: 'TypeName',
+            table: {
+                url: '/api/assets/group/attribution',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'attribution', title: '应用系统'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.attribution)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+        tableSelect.render({
+            elem: '#ManagerNameSelect',
+            checkedKey: 'id',
+            searchPlaceholder: '安全管理员搜索',
+            searchKey: 'ManagerName',
+            table: {
+                url: '/api/assets/group/web/managername',
+                cols: [[
+                    {type: 'radio', title: "选择"},
+                    {field: 'id', width: 60, title: 'ID'},
+                    {field: 'manager_name', title: '安全管理员'},
+                ]]
+            },
+            done: function (elem, data) {
+                var NEWJSON = []
+                layui.each(data.data, function (index, item) {
+                    NEWJSON.push(item.manager_name)
+                })
+                elem.val(NEWJSON.join(","))
+            }
+        })
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>首页</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+  <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+  <link rel="stylesheet" href="/css/public.css" media="all">
+  <style>
+    .top-panel {
+      border: 1px solid #eceff9;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .top-panel > .layui-card-body{
+      height: 60px;
+    }
+    .top-panel-number{
+      line-height:60px;
+      font-size: 30px;
+      border-right:1px solid #eceff9;
+    }
+    .top-panel-tips{
+      line-height:30px;
+      font-size: 12px
+    }
+  </style>
+</head>
+<body>
+<!--<div class="layuimini-container">-->
+<div class="layuimini-main">
+
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-xs12 layui-col-md3">
+
+      <div class="layui-card top-panel">
+        <div class="layui-card-header">业务系统数量</div>
+        <div class="layui-card-body">
+          <div class="layui-row layui-col-space5">
+            <div class="layui-col-xs9 layui-col-md9 top-panel-number" id="WebCount">
+              0
+            </div>
+            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+              比昨天 <a style="color: #1aa094">▲0.12</a><br>
+              比七日 <a style="color: #bd3004">▼0.06</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="layui-col-xs12 layui-col-md3">
+
+      <div class="layui-card top-panel">
+        <div class="layui-card-header">Web漏洞数量</div>
+        <div class="layui-card-body">
+          <div class="layui-row layui-col-space5">
+            <div class="layui-col-xs9 layui-col-md9 top-panel-number" id="LevelCount">
+              0
+            </div>
+            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+              比昨天 <a style="color: #1aa094">▲0.12</a><br>
+              比七日 <a style="color: #bd3004">▼0.06</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="layui-col-xs12 layui-col-md3">
+
+      <div class="layui-card top-panel">
+        <div class="layui-card-header">Web漏洞已整改数量</div>
+        <div class="layui-card-body">
+          <div class="layui-row layui-col-space5">
+            <div class="layui-col-xs9 layui-col-md9 top-panel-number" id="LevelYesCount">
+              0
+            </div>
+            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+              比昨天 <a style="color: #1aa094">▲0.12</a><br>
+              比七日 <a style="color: #bd3004">▼0.06</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="layui-col-xs12 layui-col-md3">
+
+      <div class="layui-card top-panel">
+        <div class="layui-card-header">Web漏洞未整改数量</div>
+        <div class="layui-card-body">
+          <div class="layui-row layui-col-space5">
+            <div class="layui-col-xs9 layui-col-md9 top-panel-number" id="LevelNoCount">
+              0
+            </div>
+            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+              比昨天 <a style="color: #1aa094">▲0.12</a><br>
+              比七日 <a style="color: #bd3004">▼0.06</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-xs12 layui-col-md6">
+      <div id="echarts-manager" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+    </div>
+    <div class="layui-col-xs12 layui-col-md6">
+      <div id="echarts-level" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+    </div>
+  </div>
+
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-xs12 layui-col-md6">
+      <div id="echarts-assets_name" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+    </div>
+    <div class="layui-col-xs12 layui-col-md6">
+<!--      <div id="echarts-file_data" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>-->
+    </div>
+  </div>
+
+</div>
+<!--</div>-->
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script>
+  layui.use(['layer', 'echarts'], function () {
+    var $ = layui.jquery,
+            layer = layui.layer,
+            echarts = layui.echarts;
+
+    function GetTongJiInfo() {
+      $.ajax({
+        url: "/api/assets/home/count",
+        dataType: 'json',
+        type: 'get',
+        success: function (result) {
+          if (result.code == 200) {
+            $("#WebCount").html(result.data.web_count);
+            $("#LevelCount").html(result.data.level_count);
+            $("#LevelYesCount").html(result.data.level_yes_count);
+            $("#LevelNoCount").html(result.data.level_no_count);
+          }
+        }
+      });
+    }
+
+    GetTongJiInfo();
+
+    var echartsPiesManager = echarts.init(document.getElementById('echarts-manager'), 'walden');
+    var echartsPiesLevel = echarts.init(document.getElementById('echarts-level'), 'walden');
+    var echartsPiesAssetsName = echarts.init(document.getElementById('echarts-assets_name'), 'walden');
+    $.ajax({
+      url: "/api/assets/home/echarts",
+      type: 'get',
+      contentType: 'application/json;charset=UTF-8',
+      dataType: 'json',
+      success: function (result) {
+        if (result.code == 200) {
+          echartsPiesManager.setOption({
+            title: {
+              text: '安全管理人员漏洞统计图',
+              left: 'center'
+            },
+            tooltip: {},
+            series: [
+              {
+                name: '漏洞统计',
+                type: 'pie',
+                roseType: 'radius',
+                data: result.data,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          })
+          echartsPiesLevel.setOption({
+            title: {
+              text: '漏洞类型统计图',
+              left: 'center'
+            },
+            tooltip: {},
+            series: [
+              {
+                name: '漏洞类型统计',
+                type: 'pie',
+                roseType: 'radius',
+                data: result.data1,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          })
+          echartsPiesAssetsName.setOption({
+            title: {
+              text: '业务系统漏洞统计图',
+              left: 'center'
+            },
+            tooltip: {},
+            series: [
+              {
+                name: '业务系统漏洞类型统计',
+                type: 'pie',
+                roseType: 'radius',
+                data: result.data2,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          })
+        }
+      }
+    });
+
+
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查看终端资产</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="/css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-form layuimini-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label required">部门</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Department"  Readonly=“true” class="layui-input" id="PcDepartmentSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">二级部门</label>
+                <div class="layui-input-block">
+                    <input type="text" name="DepartmentSub" Readonly=“true” class="layui-input" id="PcDepartmentSubSelect">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">员工姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="PersonName" Readonly=“true” class="layui-input" id="PersonName">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">工号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="WorkNumber" id="WorkNumber" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">身份证号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="IdCard" id="IdCard" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Phone" id="Phone" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单位</label>
+                <div class="layui-input-block">
+                    <input type="text" name="department" id="department" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">入职时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="entry_date" id="entry_date" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">职位</label>
+                <div class="layui-input-block">
+                    <input type="text" name="port_name" id="port_name" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">计算机类型</label>
+                <div class="layui-input-block">
+                    <select name="ComputerType" id="ComputerType" Readonly=“true” lay-verify="">
+                        <option value="台式机" selected>台式机</option>
+                        <option value="笔记本">笔记本</option>
+                        <option value="其他设备">其他设备</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">计算机名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ComputerName" id="ComputerName" Readonly=“true” class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">IP/MAC地址</label>
+                <div class="layui-input-block">
+                    <textarea name="Address" id="Address" class="layui-textarea" Readonly=“true”></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">涉密等级</label>
+                <div class="layui-input-block">
+                    <select name="SecretLevel" id="SecretLevel" lay-verify="">
+                        <option value="普通商密" selected>普通商密</option>
+                        <option value="核心商密">核心商密</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">互联网权限</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="InternetFlag" id="InternetFlag" lay-skin="switch" lay-text="是|否" value="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">USB文件拷贝权限</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="FileCopyFlag" id="FileCopyFlag" lay-skin="switch" lay-text="是|否" value="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">外网邮箱权限</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="EmailFlag" id="EmailFlag" lay-skin="switch" lay-text="是|否" value="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">VPN权限</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="VpnFlag" id="VpnFlag" lay-skin="switch" lay-text="是|否" value="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">PDM权限</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="PdmFlag" id="PdmFlag" lay-skin="switch" lay-text="是|否" value="是">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea name="Remarks" id="Remarks" class="layui-textarea" Readonly=“true”></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="/lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var $ = layui.jquery,
+            form = layui.form;
+
+        var AssetsPcId = localStorage.getItem("assetsPcId");
+        if (AssetsPcId === ""){
+            var iframeIndex = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(iframeIndex);
+        }
+
+        function GetTypeInfo() {
+            $.ajax({
+                url: "/api/assets/pcuserinfo",
+                dataType: 'json',
+                type: 'post',
+                data: JSON.stringify({"ID":AssetsPcId}),
+                success: function (result) {
+                    if (result.code == 200) {
+                        $("#PcDepartmentSelect").attr("value", result.data.computer.department);
+                        $("#PcDepartmentSubSelect").attr("value", result.data.computer.department_sub);
+                        $("#PersonName").attr("value", result.data.computer.person_name);
+                        $("#WorkNumber").attr("value", result.data.computer.work_number);
+                        if(result.data.computer.computer_type==="台式机"){
+                            $("#ComputerType").get(0).selectedIndex=0
+                        }else if(result.data.computer.computer_type==="笔记本"){
+                            $("#ComputerType").get(0).selectedIndex=1
+                        }else{
+                            $("#ComputerType").get(0).selectedIndex=2
+                        }
+                        $("#ComputerName").attr("value", result.data.computer.computer_name);
+                        $("#Address").text(result.data.computer.address);
+                        if (result.data.computer.internet_flag == "是"){
+                            $("#InternetFlag").prop("checked",true);
+                        }
+                        if (result.data.computer.file_copy_flag == "是"){
+                            $("#FileCopyFlag").prop("checked",true);
+                        }
+                        if (result.data.computer.email_flag == "是"){
+                            $("#EmailFlag").prop("checked",true);
+                        }
+                        if (result.data.computer.vpn_flag == "是"){
+                            $("#VpnFlag").prop("checked",true);
+                        }
+                        if (result.data.computer.pdm_flag == "是"){
+                            $("#PdmFlag").prop("checked",true);
+                        }
+                        $("#Remarks").text(result.data.computer.remarks);
+                        if(result.data.users){
+                            $("#IdCard").attr("value", result.data.users.id_card);
+                            $("#Phone").attr("value", result.data.users.phone);
+                            $("#department").attr("value", result.data.users.department);
+                            $("#entry_date").attr("value", result.data.users.entry_date);
+                            $("#port_name").attr("value", result.data.users.port_name);
+                        }
+                        if(result.data.secret_level==="普通商密"){
+                            $("#SecretLevel").get(0).selectedIndex=0
+                        }else{
+                            $("#SecretLevel").get(0).selectedIndex=1
+                        }
+                        form.render();
+                    } else {
+                        layer.alert(result.msg, {
+                            title: '提示',
+                            icon: 2
+                        })
+                    }
+                }
+            });
+        }
+        GetTypeInfo();
+    });
+</script>
+
+</body>
+</html>

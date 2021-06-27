@@ -1,0 +1,14 @@
+[server]
+    Address = "127.0.0.1:8081"
+    ClientMaxBodySize = "20m" # 客户端文件上传最大大小
+
+[database]
+    [[database.default]]
+        type = "mysql"
+        link = "root:123456@tcp(127.0.0.1:3306)/assets"
+        debug = "false"
+
+[gfcli]
+    [[gfcli.gen.dao]]
+        link = "mysql:root:123456@tcp(127.0.0.1:3306)/assets"
+        jsonCase = "Snake"
