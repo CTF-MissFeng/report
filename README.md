@@ -18,8 +18,14 @@
 
 ```
 1、创建mysql数据库名为assets（可自定义），格式为UTF-8,导入document/assets.sql文件
-2、修改配置文件：config/config.toml，填入mysql数据库信息
+
+2、修改配置文件：config/config.toml，填入相应的mysql数据库信息
+
 2、运行assets程序即可（默认用户名密码：admin/admin888@A）或者自行go build编译
+
+linux：
+前台运行：./assets
+后台运行：nohub ./assets > web.log 2>&1 &
 ```
 
 
