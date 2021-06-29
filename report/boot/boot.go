@@ -20,10 +20,10 @@ func init() {
 	server := g.Server()
 	if err := server.SetConfigWithMap(g.Map{
 		"address": g.Cfg().Get("server.Address"), // web服务器监听地址
-		"serverAgent": "ChangAn", // web服务器server信息
+		"serverAgent": "assetr", // web服务器server信息
 		"serverRoot": "public", // 静态文件服务的目录根路径
 		"SessionMaxAge": 300 * time.Minute, // session最大超时时间
-		"SessionIdName": "ChangAn", // session会话ID名称
+		"SessionIdName": "assert", // session会话ID名称
 		"SessionCookieOutput": true, // 指定是否将会话ID自动输出到cookie
 	}); err != nil{
 		logger.WebLog.Fatalf("web服务器配置有误，程序运行失败:%s", err.Error())
