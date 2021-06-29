@@ -25,7 +25,7 @@
 
 linux：
 前台运行：./assets
-后台运行：nohub ./assets > web.log 2>&1 &
+后台运行：nohup ./assets > web.log 2>&1 &
 
 浏览器访问配置文件里的web地址即可
 ```
