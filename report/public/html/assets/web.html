@@ -8,17 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="/lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="/css/public.css" media="all">
-    <style>
-        .layui-table-cell {
-            font-size:14px;
-            padding:0 5px;
-            height:auto;
-            overflow:visible;
-            text-overflow:inherit;
-            white-space:normal;
-            word-break: break-all;
-        }
-    </style>
 </head>
 <body>
 <div class="layuimini-container">
@@ -122,12 +111,12 @@
                     },
                     {
                         field: 'attribution',
-                        width: 200,
+                        width: 150,
                         title: '应用系统'
                     },
                     {
                         field: 'manager_name',
-                        width: 100,
+                        width: 90,
                         title: '安全管理员'
                     },
                     {
@@ -141,9 +130,21 @@
                         title: '漏洞数'
                     },
                     {
+                        field: 'level_info',
+                        width: 120,
+                        title: '漏洞统计'
+                    },
+                    {
                         field: 'level_no_count',
                         width: 100,
-                        title: '未整改'
+                        title: '未整改',
+                        templet: function(d){
+                            if (d.level_no_count>0){
+                                return '<span style="color: #c00;">'+d.level_no_count+'</span>'
+                            }else{
+                                return d.level_no_count
+                            }
+                        }
                     },
                     {
                         field: 'urls',
@@ -165,7 +166,7 @@
                     },
                     {
                         title: '操作',
-                        minWidth: 150,
+                        minWidth: 300,
                         toolbar: '#currentTableBar',
                         align: "center"
                     }

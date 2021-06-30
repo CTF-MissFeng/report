@@ -73,6 +73,8 @@ type ResponseEchartsInfo struct{
 	Data []UResponseEchartsInfoManagerLevel `json:"data"`
 	Data1 []UResponseEchartsInfoLevel `json:"data1"`
 	Data2 []UResponseEchartsInfoAssetsName `json:"data2"`
+	Data3 []UResponseEchartsInfoAssetsName `json:"data3"`
+	Data4 []UResponseEchartsInfoLevel `json:"data4"`
 }
 
 // UResponseEchartsInfoManagerLevel Echarts统计数据返回所需data信息 安全管理人员漏洞情况
@@ -92,4 +94,5 @@ type UResponseEchartsInfoAssetsName struct{
 	AssetsName string `json:"name"`
 	Number int `json:"value"`
 }
+
 

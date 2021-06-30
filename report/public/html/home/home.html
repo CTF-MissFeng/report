@@ -110,19 +110,28 @@
 
   <div class="layui-row layui-col-space15">
     <div class="layui-col-xs12 layui-col-md6">
-      <div id="echarts-manager" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+      <div id="echarts-manager" style="background-color:#ffffff;min-height:500px;padding: 10px"></div>
     </div>
     <div class="layui-col-xs12 layui-col-md6">
-      <div id="echarts-level" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+      <div id="echarts-level" style="background-color:#ffffff;min-height:500px;padding: 10px"></div>
     </div>
   </div>
 
   <div class="layui-row layui-col-space15">
     <div class="layui-col-xs12 layui-col-md6">
-      <div id="echarts-assets_name" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+      <div id="echarts-assets_name" style="background-color:#ffffff;min-height:500px;padding: 10px"></div>
     </div>
     <div class="layui-col-xs12 layui-col-md6">
-<!--      <div id="echarts-file_data" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>-->
+      <div id="echarts-datetime" style="background-color:#ffffff;min-height:500px;padding: 10px"></div>
+    </div>
+  </div>
+
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-xs12 layui-col-md6">
+      <div id="echarts-datetime-type" style="background-color:#ffffff;min-height:500px;padding: 10px"></div>
+    </div>
+    <div class="layui-col-xs12 layui-col-md6">
+
     </div>
   </div>
 
@@ -151,12 +160,13 @@
         }
       });
     }
-
     GetTongJiInfo();
 
     var echartsPiesManager = echarts.init(document.getElementById('echarts-manager'), 'walden');
     var echartsPiesLevel = echarts.init(document.getElementById('echarts-level'), 'walden');
     var echartsPiesAssetsName = echarts.init(document.getElementById('echarts-assets_name'), 'walden');
+    var echartsPiesDatetime = echarts.init(document.getElementById('echarts-datetime'), 'walden');
+    var echartsPiesDatetimeType = echarts.init(document.getElementById('echarts-datetime-type'), 'walden');
     $.ajax({
       url: "/api/assets/home/echarts",
       type: 'get',
@@ -166,13 +176,13 @@
         if (result.code == 200) {
           echartsPiesManager.setOption({
             title: {
-              text: '安全管理人员漏洞统计图',
+              text: '安全管理人员漏洞统计',
               left: 'center'
             },
             tooltip: {},
             series: [
               {
-                name: '漏洞统计',
+                name: '漏洞个数',
                 type: 'pie',
                 roseType: 'radius',
                 data: result.data,
@@ -188,15 +198,15 @@
           })
           echartsPiesLevel.setOption({
             title: {
-              text: '漏洞类型统计图',
+              text: '漏洞类型Top10',
               left: 'center'
             },
             tooltip: {},
             series: [
               {
-                name: '漏洞类型统计',
+                name: '漏洞个数',
                 type: 'pie',
-                roseType: 'radius',
+                roseType: 'area',
                 data: result.data1,
                 emphasis: {
                   itemStyle: {
@@ -210,16 +220,60 @@
           })
           echartsPiesAssetsName.setOption({
             title: {
-              text: '业务系统漏洞统计图',
+              text: '业务系统漏洞Top10',
               left: 'center'
             },
             tooltip: {},
             series: [
               {
-                name: '业务系统漏洞类型统计',
+                name: '漏洞个数',
                 type: 'pie',
-                roseType: 'radius',
+                roseType: 'area',
                 data: result.data2,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          })
+          echartsPiesDatetime.setOption({
+            title: {
+              text: '本月漏洞情况',
+              left: 'center'
+            },
+            tooltip: {},
+            series: [
+              {
+                name: '漏洞个数',
+                type: 'pie',
+                roseType: 'area',
+                data: result.data3,
+                emphasis: {
+                  itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                  }
+                }
+              }
+            ]
+          })
+          echartsPiesDatetimeType.setOption({
+            title: {
+              text: '本月漏洞类型',
+              left: 'center'
+            },
+            tooltip: {},
+            series: [
+              {
+                name: '漏洞个数',
+                type: 'pie',
+                roseType: 'area',
+                data: result.data4,
                 emphasis: {
                   itemStyle: {
                     shadowBlur: 10,

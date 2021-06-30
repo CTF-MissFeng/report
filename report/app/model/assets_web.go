@@ -41,12 +41,18 @@ type ResponseAssetsWebInfo struct{
 	*AssetsWeb
 	LevelCount int `json:"level_count"`
 	LevelNoCount int `json:"level_no_count"`
+	LevelInfo string `json:"level_info"`
 	Data []ResponseAssetsWebInfoImgsrcInfo `json:"data"`
 }
 
 // ResponseAssetsWebInfoImgsrcInfo 业务系统管理 截图URL
 type ResponseAssetsWebInfoImgsrcInfo struct{
 	Src string `json:"src"`
+}
+
+// ResponseAssetsWebInfoLevelInfo 业务系统管理 漏洞等级统计
+type ResponseAssetsWebInfoLevelInfo struct{
+	Level int `json:"level"`
 }
 
 // RequestAssetsWebAdd 添加业务系统资产所需信息

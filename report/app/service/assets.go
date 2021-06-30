@@ -1031,14 +1031,42 @@ func (s *serviceAssets) SearchWeb(page, limit int, search interface{})*model.Res
 		index++
 		result[i].ID1 = result[i].Id
 		result[i].Id = uint(index)
-		levelCount,err := dao.AssetsReports.Where("attribution=?", result[i].Attribution).Count()
+		levelCount,err := dao.AssetsReports.Where("assets_name=?", result[i].AssetsName).Count()
 		if err == nil{
 			result[i].LevelCount = levelCount
 		}
-		levelNoCount,err := dao.AssetsReports.Where("attribution=?", result[i].Attribution).Where("level_status=?", 2).Count()
+		levelNoCount,err := dao.AssetsReports.Where("assets_name=?", result[i].AssetsName).Where("level_status=?", 2).Count()
 		if err == nil{
 			result[i].LevelNoCount = levelNoCount
 		}
+		var levelint []model.ResponseAssetsWebInfoLevelInfo
+		err = dao.AssetsReports.Fields("level").Where("assets_name=?", result[i].AssetsName).Scan(&levelint)
+		msg := ""
+		if err == nil{
+			level1 := 0
+			level2 := 0
+			level3 := 0
+			for _,level_tmp := range levelint{
+				switch level_tmp.Level {
+				case 1:
+					level1++
+				case 2:
+					level2++
+				case 3:
+					level3++
+				}
+			}
+			if level1 != 0{
+				msg += fmt.Sprintf("高%d ", level1)
+			}
+			if level2 != 0{
+				msg += fmt.Sprintf("中%d ", level2)
+			}
+			if level3 != 0{
+				msg += fmt.Sprintf("低%d ", level3)
+			}
+		}
+		result[i].LevelInfo = msg
 		result[i].Urls = strings.ReplaceAll(result[i].Urls,"\n","<br/>")
 		if len(result[i].ScreenshotsPath) != 0{
 			var imgsrc []model.ResponseAssetsWebInfoImgsrcInfo
@@ -1429,7 +1457,7 @@ func (s *serviceAssets) ExportReport()(*bytes.Buffer, error){
 		xlsx.SetCellValue(table_name, "D" + strconv.Itoa(i+2), info.LevelName)
 		if info.Level == 1{
 			xlsx.SetCellValue(table_name, "E" + strconv.Itoa(i+2), "高危")
-		} else if info.Level == 1{
+		} else if info.Level == 2{
 			xlsx.SetCellValue(table_name, "E" + strconv.Itoa(i+2), "中危")
 		} else{
 			xlsx.SetCellValue(table_name, "E" + strconv.Itoa(i+2), "低危")
@@ -1502,7 +1530,9 @@ func (s *serviceAssets) EchartsInfo()*model.ResponseEchartsInfo{
 	var result1 []model.UResponseEchartsInfoManagerLevel
 	var result2 []model.UResponseEchartsInfoLevel
 	var result3 []model.UResponseEchartsInfoAssetsName
-	err := dao.AssetsReports.Fields("COUNT(level_name) Number, level_name").Group("level_name").Limit(10).Scan(&result2)
+	var result4 []model.UResponseEchartsInfoAssetsName
+	var result5 []model.UResponseEchartsInfoLevel
+	err := dao.AssetsReports.Order("Number DESC").Fields("COUNT(level_name) Number, level_name").Group("level_name").Limit(10).Scan(&result2)
 	if err != nil {
 		return nil
 	}
@@ -1510,9 +1540,19 @@ func (s *serviceAssets) EchartsInfo()*model.ResponseEchartsInfo{
 	if err != nil {
 		return nil
 	}
-	err = dao.AssetsReports.Fields("COUNT(assets_name) Number, assets_name").Group("assets_name").Limit(10).Scan(&result3)
+	err = dao.AssetsReports.Order("Number DESC").Fields("COUNT(assets_name) Number, assets_name").Group("assets_name").Limit(10).Scan(&result3)
 	if err != nil {
 		return nil
 	}
-	return &model.ResponseEchartsInfo{Code:200,Msg:"ok",Data:result1, Data1:result2, Data2:result3}
+	t := gtime.Now()
+	datetime := t.Format("Y-m-%")
+	err = dao.AssetsReports.Where("file_date like ?", datetime).Order("Number DESC").Fields("COUNT(assets_name) Number, assets_name").Group("assets_name").Scan(&result4)
+	if err != nil {
+		return nil
+	}
+	err = dao.AssetsReports.Where("file_date like ?", datetime).Order("Number DESC").Fields("COUNT(level_name) Number, level_name").Group("level_name").Limit(15).Scan(&result5)
+	if err != nil {
+		return nil
+	}
+	return &model.ResponseEchartsInfo{Code:200,Msg:"ok",Data:result1, Data1:result2, Data2:result3, Data3: result4, Data4: result5}
 }
